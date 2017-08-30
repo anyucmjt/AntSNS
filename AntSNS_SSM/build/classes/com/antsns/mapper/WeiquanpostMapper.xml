@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.antsns.mapper.WeiquanpostMapper" >
+  <resultMap id="BaseResultMap" type="com.antsns.entity.Weiquanpost" >
+    <id column="post_id" property="postId" jdbcType="INTEGER" />
+    <result column="weiquan_id" property="weiquanId" jdbcType="INTEGER" />
+    <result column="post_uid" property="postUid" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="reply_count" property="replyCount" jdbcType="INTEGER" />
+    <result column="read_count" property="readCount" jdbcType="INTEGER" />
+    <result column="last_reply_uid" property="lastReplyUid" jdbcType="INTEGER" />
+    <result column="digest" property="digest" jdbcType="INTEGER" />
+    <result column="top" property="top" jdbcType="INTEGER" />
+    <result column="lock" property="lock" jdbcType="INTEGER" />
+    <result column="recommend" property="recommend" jdbcType="INTEGER" />
+    <result column="recommend_time" property="recommendTime" jdbcType="INTEGER" />
+    <result column="is_del" property="isDel" jdbcType="TINYINT" />
+    <result column="feed_id" property="feedId" jdbcType="INTEGER" />
+    <result column="reply_all_count" property="replyAllCount" jdbcType="INTEGER" />
+    <result column="attach" property="attach" jdbcType="VARCHAR" />
+    <result column="praise" property="praise" jdbcType="INTEGER" />
+    <result column="from" property="from" jdbcType="TINYINT" />
+    <result column="top_time" property="topTime" jdbcType="INTEGER" />
+    <result column="is_index" property="isIndex" jdbcType="TINYINT" />
+    <result column="last_reply_time" property="lastReplyTime" jdbcType="TIMESTAMP" />
+    <result column="is_index_time" property="isIndexTime" jdbcType="TIMESTAMP" />
+    <result column="post_time" property="postTime" jdbcType="TIMESTAMP" />
+    <result column="fileName" property="fileName" jdbcType="VARCHAR" />
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.antsns.entity.WeiquanpostWithBLOBs" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="index_img" property="indexImg" jdbcType="LONGVARCHAR" />
+ 	 <!-- 多对一映射，微圈 -->
+    <association property="weiquan" javaType="com.antsns.entity.WeiquanWithBLOBs">
+    <id column="weiquan_id" property="weiquanId" jdbcType="INTEGER" />
+    <result column="cid" property="cid" jdbcType="INTEGER" />
+    <result column="weiquan_name" property="weiquanName" jdbcType="VARCHAR" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="who_can_post" property="whoCanPost" jdbcType="BIT" />
+    <result column="who_can_reply" property="whoCanReply" jdbcType="BIT" />
+    <result column="follower_count" property="followerCount" jdbcType="INTEGER" />
+    <result column="thread_count" property="threadCount" jdbcType="INTEGER" />
+    <result column="admin_uid" property="adminUid" jdbcType="INTEGER" />
+    <result column="recommend" property="recommend" jdbcType="BIT" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="is_del" property="isDel" jdbcType="INTEGER" />
+    <result column="notify" property="notify" jdbcType="VARCHAR" />
+    <result column="new_count" property="newCount" jdbcType="INTEGER" />
+    <result column="new_day" property="newDay" jdbcType="DATE" />
+    <result column="info" property="info" jdbcType="VARCHAR" />
+    <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+    <result column="intro" property="intro" jdbcType="LONGVARCHAR" />
+    <result column="avatar_middle" property="avatarMiddle" jdbcType="LONGVARCHAR" />
+    <!-- 帖子数量+总评论数量 -->
+     <result column="zts" property="zts" jdbcType="TINYINT" />
+    </association>
+    <!-- 多对一，用户 -->
+    <association property="user" javaType="com.antsns.entity.User">
+  	 <id column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <!-- 多对一，角色 -->
+  	<association property="role" javaType="com.antsns.entity.Role">
+    <id column="rid" property="rid" jdbcType="INTEGER" />
+    <result column="rname" property="rname" jdbcType="VARCHAR" />
+    </association>
+  	</association>
+  	 
+  	<!-- 一对多查询,评论 -->
+  	<collection property="replyList" ofType="com.antsns.entity.WeiquanReply" column="post_id">
+  	<id column="reply_id" property="replyId" jdbcType="INTEGER" />
+    <result column="weiquan_id" property="weiquanId" jdbcType="INTEGER" />
+    <result column="post_id" property="postId" jdbcType="INTEGER" />
+    
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="to_reply_id" property="toReplyId" jdbcType="INTEGER" />
+    <result column="to_uid" property="toUid" jdbcType="INTEGER" />
+    <result column="is_del" property="isDel" jdbcType="TINYINT" />
+    <result column="comment_id" property="commentId" jdbcType="INTEGER" />
+    <result column="storey" property="storey" jdbcType="INTEGER" />
+    <result column="attach_id" property="attachId" jdbcType="INTEGER" />
+    <result column="digg_count" property="diggCount" jdbcType="INTEGER" />
+    <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+   <!--  <result column="uname" property="uname" jdbcType="VARCHAR" />--> 
+  	</collection>
+  	<!-- 一对多关联，关联点赞 -->
+  	<collection property="postdigg" ofType="com.antsns.entity.PostDigg" >
+  	<id column="id" property="id" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="row_id" property="rowId" jdbcType="INTEGER" />
+    <result column="cTime" property="ctime" jdbcType="TIMESTAMP" />
+  	</collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    post_id, weiquan_id, post_uid, title, reply_count, read_count, last_reply_uid, digest, 
+    top, lock, recommend, recommend_time, is_del, feed_id, reply_all_count, attach, praise, 
+    from, top_time, is_index, last_reply_time, is_index_time, post_time, fileName
+  </sql>
+  <sql id="Blob_Column_List" >
+    content, index_img
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from as_weiquan_post
+    where post_id = #{postId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from as_weiquan_post
+    where post_id = #{postId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.antsns.entity.WeiquanpostWithBLOBs" >
+    insert into as_weiquan_post (post_id, weiquan_id, post_uid, 
+      title, reply_count, read_count, 
+      last_reply_uid, digest, top, 
+      lock, recommend, recommend_time, 
+      is_del, feed_id, reply_all_count, 
+      attach, praise, from, 
+      top_time, is_index, last_reply_time, 
+      is_index_time, post_time, fileName, 
+      content, index_img)
+    values (#{postId,jdbcType=INTEGER}, #{weiquanId,jdbcType=INTEGER}, #{postUid,jdbcType=INTEGER}, 
+      #{title,jdbcType=VARCHAR}, #{replyCount,jdbcType=INTEGER}, #{readCount,jdbcType=INTEGER}, 
+      #{lastReplyUid,jdbcType=INTEGER}, #{digest,jdbcType=INTEGER}, #{top,jdbcType=INTEGER}, 
+      #{lock,jdbcType=INTEGER}, #{recommend,jdbcType=INTEGER}, #{recommendTime,jdbcType=INTEGER}, 
+      #{isDel,jdbcType=TINYINT}, #{feedId,jdbcType=INTEGER}, #{replyAllCount,jdbcType=INTEGER}, 
+      #{attach,jdbcType=VARCHAR}, #{praise,jdbcType=INTEGER}, #{from,jdbcType=TINYINT}, 
+      #{topTime,jdbcType=INTEGER}, #{isIndex,jdbcType=TINYINT}, #{lastReplyTime,jdbcType=TIMESTAMP}, 
+      #{isIndexTime,jdbcType=TIMESTAMP}, #{postTime,jdbcType=TIMESTAMP}, #{filename,jdbcType=VARCHAR}, 
+      #{content,jdbcType=LONGVARCHAR}, #{indexImg,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.antsns.entity.WeiquanpostWithBLOBs" >
+    insert into as_weiquan_post
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="postId != null" >
+        post_id,
+      </if>
+      <if test="weiquanId != null" >
+        weiquan_id,
+      </if>
+      <if test="postUid != null" >
+        post_uid,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="replyCount != null" >
+        reply_count,
+      </if>
+      <if test="readCount != null" >
+        read_count,
+      </if>
+      <if test="lastReplyUid != null" >
+        last_reply_uid,
+      </if>
+      <if test="digest != null" >
+        digest,
+      </if>
+      <if test="top != null" >
+        top,
+      </if>
+      <if test="lock != null" >
+        lock,
+      </if>
+      <if test="recommend != null" >
+        recommend,
+      </if>
+      <if test="recommendTime != null" >
+        recommend_time,
+      </if>
+      <if test="isDel != null" >
+        is_del,
+      </if>
+      <if test="feedId != null" >
+        feed_id,
+      </if>
+      <if test="replyAllCount != null" >
+        reply_all_count,
+      </if>
+      <if test="attach != null" >
+        attach,
+      </if>
+      <if test="praise != null" >
+        praise,
+      </if>
+      <if test="from != null" >
+        from,
+      </if>
+      <if test="topTime != null" >
+        top_time,
+      </if>
+      <if test="isIndex != null" >
+        is_index,
+      </if>
+      <if test="lastReplyTime != null" >
+        last_reply_time,
+      </if>
+      <if test="isIndexTime != null" >
+        is_index_time,
+      </if>
+      <if test="postTime != null" >
+        post_time,
+      </if>
+      <if test="filename != null" >
+        fileName,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="indexImg != null" >
+        index_img,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="postId != null" >
+        #{postId,jdbcType=INTEGER},
+      </if>
+      <if test="weiquanId != null" >
+        #{weiquanId,jdbcType=INTEGER},
+      </if>
+      <if test="postUid != null" >
+        #{postUid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="replyCount != null" >
+        #{replyCount,jdbcType=INTEGER},
+      </if>
+      <if test="readCount != null" >
+        #{readCount,jdbcType=INTEGER},
+      </if>
+      <if test="lastReplyUid != null" >
+        #{lastReplyUid,jdbcType=INTEGER},
+      </if>
+      <if test="digest != null" >
+        #{digest,jdbcType=INTEGER},
+      </if>
+      <if test="top != null" >
+        #{top,jdbcType=INTEGER},
+      </if>
+      <if test="lock != null" >
+        #{lock,jdbcType=INTEGER},
+      </if>
+      <if test="recommend != null" >
+        #{recommend,jdbcType=INTEGER},
+      </if>
+      <if test="recommendTime != null" >
+        #{recommendTime,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=TINYINT},
+      </if>
+      <if test="feedId != null" >
+        #{feedId,jdbcType=INTEGER},
+      </if>
+      <if test="replyAllCount != null" >
+        #{replyAllCount,jdbcType=INTEGER},
+      </if>
+      <if test="attach != null" >
+        #{attach,jdbcType=VARCHAR},
+      </if>
+      <if test="praise != null" >
+        #{praise,jdbcType=INTEGER},
+      </if>
+      <if test="from != null" >
+        #{from,jdbcType=TINYINT},
+      </if>
+      <if test="topTime != null" >
+        #{topTime,jdbcType=INTEGER},
+      </if>
+      <if test="isIndex != null" >
+        #{isIndex,jdbcType=TINYINT},
+      </if>
+      <if test="lastReplyTime != null" >
+        #{lastReplyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isIndexTime != null" >
+        #{isIndexTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="postTime != null" >
+        #{postTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="filename != null" >
+        #{filename,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="indexImg != null" >
+        #{indexImg,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.antsns.entity.WeiquanpostWithBLOBs" >
+    update as_weiquan_post
+    <set >
+      <if test="weiquanId != null" >
+        weiquan_id = #{weiquanId,jdbcType=INTEGER},
+      </if>
+      <if test="postUid != null" >
+        post_uid = #{postUid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="replyCount != null" >
+        reply_count = #{replyCount,jdbcType=INTEGER},
+      </if>
+      <if test="readCount != null" >
+        read_count = #{readCount,jdbcType=INTEGER},
+      </if>
+      <if test="lastReplyUid != null" >
+        last_reply_uid = #{lastReplyUid,jdbcType=INTEGER},
+      </if>
+      <if test="digest != null" >
+        digest = #{digest,jdbcType=INTEGER},
+      </if>
+      <if test="top != null" >
+        top = #{top,jdbcType=INTEGER},
+      </if>
+      <if test="lock != null" >
+        lock = #{lock,jdbcType=INTEGER},
+      </if>
+      <if test="recommend != null" >
+        recommend = #{recommend,jdbcType=INTEGER},
+      </if>
+      <if test="recommendTime != null" >
+        recommend_time = #{recommendTime,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null" >
+        is_del = #{isDel,jdbcType=TINYINT},
+      </if>
+      <if test="feedId != null" >
+        feed_id = #{feedId,jdbcType=INTEGER},
+      </if>
+      <if test="replyAllCount != null" >
+        reply_all_count = #{replyAllCount,jdbcType=INTEGER},
+      </if>
+      <if test="attach != null" >
+        attach = #{attach,jdbcType=VARCHAR},
+      </if>
+      <if test="praise != null" >
+        praise = #{praise,jdbcType=INTEGER},
+      </if>
+      <if test="from != null" >
+        from = #{from,jdbcType=TINYINT},
+      </if>
+      <if test="topTime != null" >
+        top_time = #{topTime,jdbcType=INTEGER},
+      </if>
+      <if test="isIndex != null" >
+        is_index = #{isIndex,jdbcType=TINYINT},
+      </if>
+      <if test="lastReplyTime != null" >
+        last_reply_time = #{lastReplyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isIndexTime != null" >
+        is_index_time = #{isIndexTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="postTime != null" >
+        post_time = #{postTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="filename != null" >
+        fileName = #{filename,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="indexImg != null" >
+        index_img = #{indexImg,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where post_id = #{postId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.antsns.entity.WeiquanpostWithBLOBs" >
+    update as_weiquan_post
+    set weiquan_id = #{weiquanId,jdbcType=INTEGER},
+      post_uid = #{postUid,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      reply_count = #{replyCount,jdbcType=INTEGER},
+      read_count = #{readCount,jdbcType=INTEGER},
+      last_reply_uid = #{lastReplyUid,jdbcType=INTEGER},
+      digest = #{digest,jdbcType=INTEGER},
+      top = #{top,jdbcType=INTEGER},
+      lock = #{lock,jdbcType=INTEGER},
+      recommend = #{recommend,jdbcType=INTEGER},
+      recommend_time = #{recommendTime,jdbcType=INTEGER},
+      is_del = #{isDel,jdbcType=TINYINT},
+      feed_id = #{feedId,jdbcType=INTEGER},
+      reply_all_count = #{replyAllCount,jdbcType=INTEGER},
+      attach = #{attach,jdbcType=VARCHAR},
+      praise = #{praise,jdbcType=INTEGER},
+      from = #{from,jdbcType=TINYINT},
+      top_time = #{topTime,jdbcType=INTEGER},
+      is_index = #{isIndex,jdbcType=TINYINT},
+      last_reply_time = #{lastReplyTime,jdbcType=TIMESTAMP},
+      is_index_time = #{isIndexTime,jdbcType=TIMESTAMP},
+      post_time = #{postTime,jdbcType=TIMESTAMP},
+      fileName = #{filename,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR},
+      index_img = #{indexImg,jdbcType=LONGVARCHAR}
+    where post_id = #{postId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.antsns.entity.Weiquanpost" >
+    update as_weiquan_post
+    set weiquan_id = #{weiquanId,jdbcType=INTEGER},
+      post_uid = #{postUid,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      reply_count = #{replyCount,jdbcType=INTEGER},
+      read_count = #{readCount,jdbcType=INTEGER},
+      last_reply_uid = #{lastReplyUid,jdbcType=INTEGER},
+      digest = #{digest,jdbcType=INTEGER},
+      top = #{top,jdbcType=INTEGER},
+      lock = #{lock,jdbcType=INTEGER},
+      recommend = #{recommend,jdbcType=INTEGER},
+      recommend_time = #{recommendTime,jdbcType=INTEGER},
+      is_del = #{isDel,jdbcType=TINYINT},
+      feed_id = #{feedId,jdbcType=INTEGER},
+      reply_all_count = #{replyAllCount,jdbcType=INTEGER},
+      attach = #{attach,jdbcType=VARCHAR},
+      praise = #{praise,jdbcType=INTEGER},
+      from = #{from,jdbcType=TINYINT},
+      top_time = #{topTime,jdbcType=INTEGER},
+      is_index = #{isIndex,jdbcType=TINYINT},
+      last_reply_time = #{lastReplyTime,jdbcType=TIMESTAMP},
+      is_index_time = #{isIndexTime,jdbcType=TIMESTAMP},
+      post_time = #{postTime,jdbcType=TIMESTAMP},
+      fileName = #{filename,jdbcType=VARCHAR}
+    where post_id = #{postId,jdbcType=INTEGER}
+  </update>
+   <!-- 帖子详情页查询 -->
+  <select id="selectPostById" parameterType="int" resultMap="ResultMapWithBLOBs">
+  SELECT
+	post.post_id,
+	uname,
+	post.title,
+	post.content,
+	wq.weiquan_name,
+	post.post_time,
+	post.digest,
+	post.top,
+	post.attach,
+	post.recommend,
+	post.reply_all_count,
+	post.fileName,
+	post.post_uid,
+	post.praise
+FROM
+	as_user u,
+	as_weiquan wq,
+	as_weiquan_post post
+WHERE
+	post.post_uid = u.uid
+AND post.weiquan_id = wq.weiquan_id 
+and post.post_id = #{postId};
+  </select>
+  <!-- 查询点赞数量 -->
+  <select id="selectLike" resultMap="ResultMapWithBLOBs" parameterType="int">
+  SELECT
+	post_id,
+	title,
+	praise
+FROM
+	as_weiquan_post where post_id=#{postId}
+  
+  </select>
+ <!-- 添加评论，评论总数量+1 -->
+ <update id="updateAddReply" parameterType="com.antsns.entity.WeiquanpostWithBLOBs">
+ UPDATE as_weiquan_post
+SET reply_all_count = reply_all_count + 1
+WHERE
+	post_id = #{postId};
+ </update>
+ <!-- 删除评论，评论总数量-1 -->
+ <update id="updatejianReply" parameterType="com.antsns.entity.WeiquanpostWithBLOBs">
+ UPDATE as_weiquan_post
+SET reply_all_count = reply_all_count - 1
+WHERE
+	post_id = #{postId};
+ 
+ </update>
+  <!-- 发表帖子 -->
+  <insert id="InsertPost" parameterType="com.antsns.entity.WeiquanpostWithBLOBs" useGeneratedKeys="true" keyProperty="postId">
+  insert into as_weiquan_post (post_id,weiquan_id,post_uid,title,content,attach,fileName) 
+  VALUES (#{postId},#{weiquanId},#{postUid},#{title},#{content},#{attach},#{fileName});
+  </insert>
+  <!-- 修改帖子 -->
+  <update id="UpdatePost" parameterType="com.antsns.entity.WeiquanpostWithBLOBs">
+  UPDATE  as_weiquan_post
+SET title = #{title},content = #{content} 
+where post_id = #{postId};
+  </update>
+<!-- 对帖子加精华 -->
+<update id="digestjia" parameterType="com.antsns.entity.WeiquanpostWithBLOBs" >
+UPDATE as_weiquan_post set digest = 1 where post_id = #{postId};
+</update>
+<!-- 对帖子加圈内置顶 -->
+<update id="topwqjia" parameterType="com.antsns.entity.WeiquanpostWithBLOBs">
+UPDATE as_weiquan_post set top = 1 where post_id = #{postId};
+</update>
+<!-- 对帖子加全局置顶 -->
+<update id="topjia" parameterType="com.antsns.entity.WeiquanpostWithBLOBs">
+UPDATE as_weiquan_post set top = 2 where post_id = #{postId};
+</update>
+<!-- 对帖子设为推荐 -->
+<update id="recommendjia" parameterType="com.antsns.entity.WeiquanpostWithBLOBs">
+UPDATE as_weiquan_post set recommend =1 where post_id = #{postId};
+</update>
+<!-- 取消帖子精华 -->
+<update id="digestjian" parameterType="com.antsns.entity.WeiquanpostWithBLOBs">
+UPDATE as_weiquan_post set digest = 0 where post_id = #{postId};
+</update>
+<!-- 取消帖子圈内置顶 -->
+<update id="topwqjian" parameterType="com.antsns.entity.WeiquanpostWithBLOBs">
+UPDATE as_weiquan_post set top = 0 where post_id = #{postId};
+</update>
+<!-- 取消帖子全局置顶 -->
+<update id="topjian" parameterType="com.antsns.entity.WeiquanpostWithBLOBs">
+UPDATE as_weiquan_post set top = 0 where post_id = #{postId};
+</update>
+<!-- 取消帖子推荐 -->
+<update id="recommendjian" parameterType="com.antsns.entity.WeiquanpostWithBLOBs">
+UPDATE as_weiquan_post set recommend = 0 where post_id = #{postId};
+</update>
+<!-- 点赞 -->
+<update id="addlike" parameterType="com.antsns.entity.WeiquanpostWithBLOBs">
+update as_weiquan_post set praise = praise+1 where post_id = #{postId}; 
+</update>
+<!-- 取消点赞 -->
+<update id="jianlike" parameterType="com.antsns.entity.WeiquanpostWithBLOBs">
+update as_weiquan_post set praise = praise-1 where post_id = #{postId}; 
+</update>
+<!-- 添加赞的方法 -->
+<insert id="addzan" parameterType="com.antsns.entity.WeiquanpostWithBLOBs" useGeneratedKeys="true" keyProperty="id">
+insert into as_weiquan_post_digg(uid,post_id) VALUES (#{uid},#{post_id});
+</insert>
+  <!-- 查询所有 -->
+  <select id="selectPostFinall" resultMap="ResultMapWithBLOBs">
+  select * from as_weiquan_post
+  </select>
+</mapper>

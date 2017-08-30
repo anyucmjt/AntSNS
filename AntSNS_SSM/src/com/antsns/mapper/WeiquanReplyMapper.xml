@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.antsns.mapper.WeiquanReplyMapper" >
+  <resultMap id="BaseResultMap" type="com.antsns.entity.WeiquanReply" >
+    <id column="reply_id" property="replyId" jdbcType="INTEGER" />
+    <result column="post_id" property="postId" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="to_reply_id" property="toReplyId" jdbcType="INTEGER" />
+    <result column="to_uid" property="toUid" jdbcType="INTEGER" />
+    <result column="is_del" property="isDel" jdbcType="TINYINT" />
+    <result column="comment_id" property="commentId" jdbcType="INTEGER" />
+    <result column="storey" property="storey" jdbcType="INTEGER" />
+    <result column="attach_id" property="attachId" jdbcType="INTEGER" />
+    <result column="digg_count" property="diggCount" jdbcType="INTEGER" />
+    <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.antsns.entity.WeiquanReply" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <association property="weiquanpost" javaType="com.antsns.entity.WeiquanpostWithBLOBs">
+    <id column="post_id" property="postId" jdbcType="INTEGER" />
+    <result column="weiquan_id" property="weiquanId" jdbcType="INTEGER" />
+    <result column="post_uid" property="postUid" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="reply_count" property="replyCount" jdbcType="INTEGER" />
+    <result column="read_count" property="readCount" jdbcType="INTEGER" />
+    <result column="last_reply_uid" property="lastReplyUid" jdbcType="INTEGER" />
+    <result column="digest" property="digest" jdbcType="INTEGER" />
+    <result column="top" property="top" jdbcType="INTEGER" />
+    <result column="lock" property="lock" jdbcType="INTEGER" />
+    <result column="recommend" property="recommend" jdbcType="INTEGER" />
+    <result column="recommend_time" property="recommendTime" jdbcType="INTEGER" />
+    <result column="is_del" property="isDel" jdbcType="TINYINT" />
+    <result column="feed_id" property="feedId" jdbcType="INTEGER" />
+    <result column="reply_all_count" property="replyAllCount" jdbcType="INTEGER" />
+    <result column="attach" property="attach" jdbcType="VARCHAR" />
+    <result column="praise" property="praise" jdbcType="INTEGER" />
+    <result column="from" property="from" jdbcType="TINYINT" />
+    <result column="top_time" property="topTime" jdbcType="INTEGER" />
+    <result column="is_index" property="isIndex" jdbcType="TINYINT" />
+    <result column="last_reply_time" property="lastReplyTime" jdbcType="TIMESTAMP" />
+    <result column="is_index_time" property="isIndexTime" jdbcType="TIMESTAMP" />
+    <result column="post_time" property="postTime" jdbcType="TIMESTAMP" />
+    <result column="fileName" property="filename" jdbcType="VARCHAR" />
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+     <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="index_img" property="indexImg" jdbcType="LONGVARCHAR" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    reply_id, post_id, uid, to_reply_id, to_uid, is_del, comment_id, storey, attach_id, 
+    digg_count, ctime
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from as_weiquan_reply
+    where reply_id = #{replyId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from as_weiquan_reply
+    where reply_id = #{replyId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.antsns.entity.WeiquanReply" >
+    insert into as_weiquan_reply (reply_id, post_id, uid, 
+      to_reply_id, to_uid, is_del, 
+      comment_id, storey, attach_id, 
+      digg_count, ctime, content
+      )
+    values (#{replyId,jdbcType=INTEGER}, #{postId,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, 
+      #{toReplyId,jdbcType=INTEGER}, #{toUid,jdbcType=INTEGER}, #{isDel,jdbcType=TINYINT}, 
+      #{commentId,jdbcType=INTEGER}, #{storey,jdbcType=INTEGER}, #{attachId,jdbcType=INTEGER}, 
+      #{diggCount,jdbcType=INTEGER}, #{ctime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.antsns.entity.WeiquanReply" >
+    insert into as_weiquan_reply
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="replyId != null" >
+        reply_id,
+      </if>
+      <if test="postId != null" >
+        post_id,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="toReplyId != null" >
+        to_reply_id,
+      </if>
+      <if test="toUid != null" >
+        to_uid,
+      </if>
+      <if test="isDel != null" >
+        is_del,
+      </if>
+      <if test="commentId != null" >
+        comment_id,
+      </if>
+      <if test="storey != null" >
+        storey,
+      </if>
+      <if test="attachId != null" >
+        attach_id,
+      </if>
+      <if test="diggCount != null" >
+        digg_count,
+      </if>
+      <if test="ctime != null" >
+        ctime,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="replyId != null" >
+        #{replyId,jdbcType=INTEGER},
+      </if>
+      <if test="postId != null" >
+        #{postId,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="toReplyId != null" >
+        #{toReplyId,jdbcType=INTEGER},
+      </if>
+      <if test="toUid != null" >
+        #{toUid,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=TINYINT},
+      </if>
+      <if test="commentId != null" >
+        #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="storey != null" >
+        #{storey,jdbcType=INTEGER},
+      </if>
+      <if test="attachId != null" >
+        #{attachId,jdbcType=INTEGER},
+      </if>
+      <if test="diggCount != null" >
+        #{diggCount,jdbcType=INTEGER},
+      </if>
+      <if test="ctime != null" >
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.antsns.entity.WeiquanReply" >
+    update as_weiquan_reply
+    <set >
+      <if test="postId != null" >
+        post_id = #{postId,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="toReplyId != null" >
+        to_reply_id = #{toReplyId,jdbcType=INTEGER},
+      </if>
+      <if test="toUid != null" >
+        to_uid = #{toUid,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null" >
+        is_del = #{isDel,jdbcType=TINYINT},
+      </if>
+      <if test="commentId != null" >
+        comment_id = #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="storey != null" >
+        storey = #{storey,jdbcType=INTEGER},
+      </if>
+      <if test="attachId != null" >
+        attach_id = #{attachId,jdbcType=INTEGER},
+      </if>
+      <if test="diggCount != null" >
+        digg_count = #{diggCount,jdbcType=INTEGER},
+      </if>
+      <if test="ctime != null" >
+        ctime = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where reply_id = #{replyId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.antsns.entity.WeiquanReply" >
+    update as_weiquan_reply
+    set post_id = #{postId,jdbcType=INTEGER},
+      uid = #{uid,jdbcType=INTEGER},
+      to_reply_id = #{toReplyId,jdbcType=INTEGER},
+      to_uid = #{toUid,jdbcType=INTEGER},
+      is_del = #{isDel,jdbcType=TINYINT},
+      comment_id = #{commentId,jdbcType=INTEGER},
+      storey = #{storey,jdbcType=INTEGER},
+      attach_id = #{attachId,jdbcType=INTEGER},
+      digg_count = #{diggCount,jdbcType=INTEGER},
+      ctime = #{ctime,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where reply_id = #{replyId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.antsns.entity.WeiquanReply" >
+    update as_weiquan_reply
+    set post_id = #{postId,jdbcType=INTEGER},
+      uid = #{uid,jdbcType=INTEGER},
+      to_reply_id = #{toReplyId,jdbcType=INTEGER},
+      to_uid = #{toUid,jdbcType=INTEGER},
+      is_del = #{isDel,jdbcType=TINYINT},
+      comment_id = #{commentId,jdbcType=INTEGER},
+      storey = #{storey,jdbcType=INTEGER},
+      attach_id = #{attachId,jdbcType=INTEGER},
+      digg_count = #{diggCount,jdbcType=INTEGER},
+      ctime = #{ctime,jdbcType=TIMESTAMP}
+    where reply_id = #{replyId,jdbcType=INTEGER}
+  </update>
+   <!-- 查询所有评论 -->
+  <select id="selectReplyAll" parameterType="com.antsns.entity.WeiquanReply" resultMap="ResultMapWithBLOBs">
+ SELECT
+	r.reply_id,
+	r.post_id,
+	r.uid,
+	r.ctime,
+	r.content,
+	u.uname
+FROM
+	as_user u,
+	as_weiquan_post p,
+	as_weiquan_reply r
+WHERE
+	r.post_id = p.post_id
+AND r.uid = u.uid
+AND r.post_id = #{postId}
+ORDER BY
+	r.ctime ASC;
+  </select>
+  <!-- 添加评论 -->
+  <insert id="insertReply" parameterType="com.antsns.entity.WeiquanReply" useGeneratedKeys="true" keyProperty="replyId" >
+  INSERT INTO as_weiquan_reply (post_id,uid,content) 
+VALUES(#{postId},#{uid},#{content})
+  </insert>
+  <!-- 删除评论 -->
+  <delete id="deleteReply" parameterType="com.antsns.entity.WeiquanReply">
+  delete from as_weiquan_reply where reply_id = #{replyId};
+  </delete>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.antsns.mapper.WeiquancategoryMapper" >
+  <resultMap id="BaseResultMap" type="com.antsns.entity.Weiquancategory" >
+    <result column="cid" property="cid" jdbcType="INTEGER" />
+    <result column="cname" property="cname" jdbcType="VARCHAR" />
+      <!-- 一对多关系映射 -->
+      <collection property="weiquanList" ofType="com.antsns.entity.WeiquanWithBLOBs">
+     <id column="weiquan_id" property="weiquanId" jdbcType="INTEGER" />
+    <result column="cid" property="cid" jdbcType="INTEGER" />
+    <result column="weiquan_name" property="weiquanName" jdbcType="VARCHAR" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="who_can_post" property="whoCanPost" jdbcType="BIT" />
+    <result column="who_can_reply" property="whoCanReply" jdbcType="BIT" />
+    <result column="follower_count" property="followerCount" jdbcType="INTEGER" />
+    <result column="thread_count" property="threadCount" jdbcType="INTEGER" />
+    <result column="admin_uid" property="adminUid" jdbcType="INTEGER" />
+    <result column="recommend" property="recommend" jdbcType="BIT" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="is_del" property="isDel" jdbcType="INTEGER" />
+    <result column="notify" property="notify" jdbcType="VARCHAR" />
+    <result column="new_count" property="newCount" jdbcType="INTEGER" />
+    <result column="new_day" property="newDay" jdbcType="DATE" />
+    <result column="info" property="info" jdbcType="VARCHAR" />
+    <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+    <result column="intro" property="intro" jdbcType="LONGVARCHAR" />
+    <result column="avatar_middle" property="avatarMiddle" jdbcType="LONGVARCHAR" />  
+      </collection>
+  </resultMap>
+
+  <insert id="insert" parameterType="com.antsns.entity.Weiquancategory" >
+    insert into as_weiquan_category (cid, cname)
+    values (#{cid,jdbcType=INTEGER}, #{cname,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.antsns.entity.Weiquancategory" >
+    insert into as_weiquan_category
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cid != null" >
+        cid,
+      </if>
+      <if test="cname != null" >
+        cname,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cid != null" >
+        #{cid,jdbcType=INTEGER},
+      </if>
+      <if test="cname != null" >
+        #{cname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+    <!-- 查询出全部板块信息 -->
+   <select id="selectWeiquanList" resultMap="BaseResultMap">
+ SELECT
+	wq.weiquan_id,
+	wq.weiquan_name,
+	wq.avatar_middle,
+	wq.intro,
+	wq.follower_count,
+	wq.new_count,
+	wc.cname
+FROM
+	as_weiquan wq,
+	as_weiquan_category wc
+WHERE
+	wq.cid = wc.cid;
+  </select>
+  <select id="selectFLfinall" parameterType="com.antsns.entity.Weiquancategory" resultMap="BaseResultMap">
+  SELECT
+	cid,
+	cname
+FROM
+	as_weiquan_category;
+  
+  </select>
+  
+</mapper>

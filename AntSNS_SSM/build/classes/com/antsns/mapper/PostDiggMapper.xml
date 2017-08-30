@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.antsns.mapper.PostDiggMapper" >
+  <resultMap id="BaseResultMap" type="com.antsns.entity.PostDigg" >
+    <id column="did" property="did" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="post_id" property="postId" jdbcType="INTEGER" />
+    <result column="cTime" property="ctime" jdbcType="TIMESTAMP" />
+    <!-- 多对一，管理帖子 -->
+    <association property="weiquanpost" javaType="com.antsns.entity.WeiquanpostWithBLOBs">
+    <id column="post_id" property="postId" jdbcType="INTEGER" />
+    <result column="weiquan_id" property="weiquanId" jdbcType="INTEGER" />
+    <result column="post_uid" property="postUid" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="reply_count" property="replyCount" jdbcType="INTEGER" />
+    <result column="read_count" property="readCount" jdbcType="INTEGER" />
+    <result column="last_reply_uid" property="lastReplyUid" jdbcType="INTEGER" />
+    <result column="digest" property="digest" jdbcType="INTEGER" />
+    <result column="top" property="top" jdbcType="INTEGER" />
+    <result column="lock" property="lock" jdbcType="INTEGER" />
+    <result column="recommend" property="recommend" jdbcType="INTEGER" />
+    <result column="recommend_time" property="recommendTime" jdbcType="INTEGER" />
+    <result column="is_del" property="isDel" jdbcType="TINYINT" />
+    <result column="feed_id" property="feedId" jdbcType="INTEGER" />
+    <result column="reply_all_count" property="replyAllCount" jdbcType="INTEGER" />
+    <result column="attach" property="attach" jdbcType="VARCHAR" />
+    <result column="praise" property="praise" jdbcType="INTEGER" />
+    <result column="from" property="from" jdbcType="TINYINT" />
+    <result column="top_time" property="topTime" jdbcType="INTEGER" />
+    <result column="is_index" property="isIndex" jdbcType="TINYINT" />
+    <result column="last_reply_time" property="lastReplyTime" jdbcType="TIMESTAMP" />
+    <result column="is_index_time" property="isIndexTime" jdbcType="TIMESTAMP" />
+    <result column="post_time" property="postTime" jdbcType="TIMESTAMP" />
+    <result column="fileName" property="filename" jdbcType="VARCHAR" />
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="index_img" property="indexImg" jdbcType="LONGVARCHAR" />
+    </association>
+     <!-- 多对一，用户 -->
+     <association property="user" javaType="com.antsns.entity.User">
+  	 <id column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, uid, post_id, cTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from as_weiquan_post_digg
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from as_weiquan_post_digg
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.antsns.entity.PostDigg" >
+    insert into as_weiquan_post_digg (id, uid, post_id, 
+      cTime)
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{postId,jdbcType=INTEGER}, 
+      #{ctime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.antsns.entity.PostDigg" >
+    insert into as_weiquan_post_digg
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="postId != null" >
+        post_id,
+      </if>
+      <if test="ctime != null" >
+        cTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="postId != null" >
+        #{postId,jdbcType=INTEGER},
+      </if>
+      <if test="ctime != null" >
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.antsns.entity.PostDigg" >
+    update as_weiquan_post_digg
+    <set >
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="postId != null" >
+        post_id = #{postId,jdbcType=INTEGER},
+      </if>
+      <if test="ctime != null" >
+        cTime = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.antsns.entity.PostDigg" >
+    update as_weiquan_post_digg
+    set uid = #{uid,jdbcType=INTEGER},
+      post_id = #{postId,jdbcType=INTEGER},
+      cTime = #{ctime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!-- 帖子点赞 -->
+  <insert id="addDigg" parameterType="com.antsns.entity.PostDigg" useGeneratedKeys="true" keyProperty="did">
+  insert into as_weiquan_post_digg (uid,post_id) VALUES (#{uid},#{postId})
+  </insert>
+  <!-- 取消点赞 -->
+  <delete id="deletDigg" parameterType="com.antsns.entity.PostDigg" >
+  delete from  as_weiquan_post_digg where uid = #{uid} and post_id = #{postId}; 
+  </delete>
+  <!-- 查询 -->
+  <select id="selectById" parameterType="int" resultMap="BaseResultMap">
+  SELECT
+	uid,
+	post_id
+FROM
+	as_weiquan_post_digg
+WHERE
+	uid = #{uid}
+AND post_id = #{postId};
+  </select>
+</mapper>

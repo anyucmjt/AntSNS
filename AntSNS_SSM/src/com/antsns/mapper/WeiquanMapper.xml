@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.antsns.mapper.WeiquanMapper" >
+  <resultMap id="BaseResultMap" type="com.antsns.entity.Weiquan" >
+    <id column="weiquan_id" property="weiquanId" jdbcType="INTEGER" />
+    <result column="cid" property="cid" jdbcType="INTEGER" />
+    <result column="weiquan_name" property="weiquanName" jdbcType="VARCHAR" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="who_can_post" property="whoCanPost" jdbcType="INTEGER" />
+    <result column="who_can_reply" property="whoCanReply" jdbcType="INTEGER" />
+    <result column="follower_count" property="followerCount" jdbcType="INTEGER" />
+    <result column="thread_count" property="threadCount" jdbcType="INTEGER" />
+    <result column="admin_uid" property="adminUid" jdbcType="INTEGER" />
+    <result column="recommend" property="recommend" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="is_del" property="isDel" jdbcType="INTEGER" />
+    <result column="notify" property="notify" jdbcType="VARCHAR" />
+    <result column="new_count" property="newCount" jdbcType="INTEGER" />
+    <result column="new_day" property="newDay" jdbcType="DATE" />
+    <result column="info" property="info" jdbcType="VARCHAR" />
+    <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.antsns.entity.WeiquanWithBLOBs" extends="BaseResultMap" >
+    <result column="intro" property="intro" jdbcType="LONGVARCHAR" />
+    <result column="avatar_middle" property="avatarMiddle" jdbcType="LONGVARCHAR" />
+    <!-- 列别名，帖子数量+总评论数量 -->
+     <result column="zts" property="zts" jdbcType="TINYINT" />
+     <!-- 多对一映射关系 -->
+    <association property="weiquanFL" javaType="com.antsns.entity.Weiquancategory">
+     <id column="cid" property="cid" jdbcType="INTEGER"/>
+    <result column="cname" property="cname" jdbcType="VARCHAR" />
+    </association>
+    <!-- 多对一映射，微圈-用户 -->
+  	<association property="user" javaType="com.antsns.entity.User">
+  	 <id column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+  	</association>
+      <!-- 一对多映射关系；微圈板块-帖子 -->
+  	<collection property="wqpostList" ofType="com.antsns.entity.WeiquanpostWithBLOBs" column="weiquan_id">
+  	<id column="post_id" property="postId" jdbcType="INTEGER" />
+    <result column="weiquan_id" property="weiquanId" jdbcType="INTEGER" />
+    <result column="post_uid" property="postUid" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="reply_count" property="replyCount" jdbcType="INTEGER" />
+    <result column="read_count" property="readCount" jdbcType="INTEGER" />
+    <result column="last_reply_uid" property="lastReplyUid" jdbcType="INTEGER" />
+    <result column="digest" property="digest" jdbcType="INTEGER" />
+    <result column="top" property="top" jdbcType="INTEGER" />
+    <result column="lock" property="lock" jdbcType="INTEGER" />
+    <result column="recommend" property="recommend" jdbcType="INTEGER" />
+    <result column="recommend_time" property="recommendTime" jdbcType="INTEGER" />
+    <result column="is_del" property="isDel" jdbcType="TINYINT" />
+    <result column="feed_id" property="feedId" jdbcType="INTEGER" />
+    <result column="reply_all_count" property="replyAllCount" jdbcType="INTEGER" />
+    <result column="attach" property="attach" jdbcType="VARCHAR" />
+    <result column="praise" property="praise" jdbcType="INTEGER" />
+    <result column="from" property="from" jdbcType="TINYINT" />
+    <result column="top_time" property="topTime" jdbcType="INTEGER" />
+    <result column="is_index" property="isIndex" jdbcType="TINYINT" />
+    <result column="last_reply_time" property="lastReplyTime" jdbcType="TIMESTAMP" />
+    <result column="is_index_time" property="isIndexTime" jdbcType="TIMESTAMP" />
+    <result column="post_time" property="postTime" jdbcType="TIMESTAMP" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="index_img" property="indexImg" jdbcType="LONGVARCHAR" />
+    <!-- 别名不是字段名 -->
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+    <result column="fileName" property="fileName" jdbcType="VARCHAR" />
+  	</collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    weiquan_id, cid, weiquan_name, uid, who_can_post, who_can_reply, follower_count, 
+    thread_count, admin_uid, recommend, status, is_del, notify, new_count, new_day, info, 
+    ctime
+  </sql>
+  <sql id="Blob_Column_List" >
+    intro, avatar_middle
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from as_weiquan
+    where weiquan_id = #{weiquanId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from as_weiquan
+    where weiquan_id = #{weiquanId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.antsns.entity.WeiquanWithBLOBs" >
+    insert into as_weiquan (weiquan_id, cid, weiquan_name, 
+      uid, who_can_post, who_can_reply, 
+      follower_count, thread_count, admin_uid, 
+      recommend, status, is_del, notify, 
+      new_count, new_day, info, 
+      ctime, intro, avatar_middle
+      )
+    values (#{weiquanId,jdbcType=INTEGER}, #{cid,jdbcType=INTEGER}, #{weiquanName,jdbcType=VARCHAR}, 
+      #{uid,jdbcType=INTEGER}, #{whoCanPost,jdbcType=BIT}, #{whoCanReply,jdbcType=BIT}, 
+      #{followerCount,jdbcType=INTEGER}, #{threadCount,jdbcType=INTEGER}, #{adminUid,jdbcType=INTEGER}, 
+      #{recommend,jdbcType=BIT}, #{status,jdbcType=BIT}, #{isDel,jdbcType=INTEGER}, #{notify,jdbcType=VARCHAR}, 
+      #{newCount,jdbcType=INTEGER}, #{newDay,jdbcType=DATE}, #{info,jdbcType=VARCHAR}, 
+      #{ctime,jdbcType=TIMESTAMP}, #{intro,jdbcType=LONGVARCHAR}, #{avatarMiddle,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.antsns.entity.WeiquanWithBLOBs" >
+    insert into as_weiquan
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="weiquanId != null" >
+        weiquan_id,
+      </if>
+      <if test="cid != null" >
+        cid,
+      </if>
+      <if test="weiquanName != null" >
+        weiquan_name,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="whoCanPost != null" >
+        who_can_post,
+      </if>
+      <if test="whoCanReply != null" >
+        who_can_reply,
+      </if>
+      <if test="followerCount != null" >
+        follower_count,
+      </if>
+      <if test="threadCount != null" >
+        thread_count,
+      </if>
+      <if test="adminUid != null" >
+        admin_uid,
+      </if>
+      <if test="recommend != null" >
+        recommend,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="isDel != null" >
+        is_del,
+      </if>
+      <if test="notify != null" >
+        notify,
+      </if>
+      <if test="newCount != null" >
+        new_count,
+      </if>
+      <if test="newDay != null" >
+        new_day,
+      </if>
+      <if test="info != null" >
+        info,
+      </if>
+      <if test="ctime != null" >
+        ctime,
+      </if>
+      <if test="intro != null" >
+        intro,
+      </if>
+      <if test="avatarMiddle != null" >
+        avatar_middle,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="weiquanId != null" >
+        #{weiquanId,jdbcType=INTEGER},
+      </if>
+      <if test="cid != null" >
+        #{cid,jdbcType=INTEGER},
+      </if>
+      <if test="weiquanName != null" >
+        #{weiquanName,jdbcType=VARCHAR},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="whoCanPost != null" >
+        #{whoCanPost,jdbcType=BIT},
+      </if>
+      <if test="whoCanReply != null" >
+        #{whoCanReply,jdbcType=BIT},
+      </if>
+      <if test="followerCount != null" >
+        #{followerCount,jdbcType=INTEGER},
+      </if>
+      <if test="threadCount != null" >
+        #{threadCount,jdbcType=INTEGER},
+      </if>
+      <if test="adminUid != null" >
+        #{adminUid,jdbcType=INTEGER},
+      </if>
+      <if test="recommend != null" >
+        #{recommend,jdbcType=BIT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="notify != null" >
+        #{notify,jdbcType=VARCHAR},
+      </if>
+      <if test="newCount != null" >
+        #{newCount,jdbcType=INTEGER},
+      </if>
+      <if test="newDay != null" >
+        #{newDay,jdbcType=DATE},
+      </if>
+      <if test="info != null" >
+        #{info,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null" >
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="intro != null" >
+        #{intro,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="avatarMiddle != null" >
+        #{avatarMiddle,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.antsns.entity.WeiquanWithBLOBs" >
+    update as_weiquan
+    <set >
+      <if test="cid != null" >
+        cid = #{cid,jdbcType=INTEGER},
+      </if>
+      <if test="weiquanName != null" >
+        weiquan_name = #{weiquanName,jdbcType=VARCHAR},
+      </if>
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="whoCanPost != null" >
+        who_can_post = #{whoCanPost,jdbcType=BIT},
+      </if>
+      <if test="whoCanReply != null" >
+        who_can_reply = #{whoCanReply,jdbcType=BIT},
+      </if>
+      <if test="followerCount != null" >
+        follower_count = #{followerCount,jdbcType=INTEGER},
+      </if>
+      <if test="threadCount != null" >
+        thread_count = #{threadCount,jdbcType=INTEGER},
+      </if>
+      <if test="adminUid != null" >
+        admin_uid = #{adminUid,jdbcType=INTEGER},
+      </if>
+      <if test="recommend != null" >
+        recommend = #{recommend,jdbcType=BIT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="isDel != null" >
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="notify != null" >
+        notify = #{notify,jdbcType=VARCHAR},
+      </if>
+      <if test="newCount != null" >
+        new_count = #{newCount,jdbcType=INTEGER},
+      </if>
+      <if test="newDay != null" >
+        new_day = #{newDay,jdbcType=DATE},
+      </if>
+      <if test="info != null" >
+        info = #{info,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null" >
+        ctime = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="intro != null" >
+        intro = #{intro,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="avatarMiddle != null" >
+        avatar_middle = #{avatarMiddle,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where weiquan_id = #{weiquanId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.antsns.entity.WeiquanWithBLOBs" >
+    update as_weiquan
+    set cid = #{cid,jdbcType=INTEGER},
+      weiquan_name = #{weiquanName,jdbcType=VARCHAR},
+      uid = #{uid,jdbcType=INTEGER},
+      who_can_post = #{whoCanPost,jdbcType=BIT},
+      who_can_reply = #{whoCanReply,jdbcType=BIT},
+      follower_count = #{followerCount,jdbcType=INTEGER},
+      thread_count = #{threadCount,jdbcType=INTEGER},
+      admin_uid = #{adminUid,jdbcType=INTEGER},
+      recommend = #{recommend,jdbcType=BIT},
+      status = #{status,jdbcType=BIT},
+      is_del = #{isDel,jdbcType=INTEGER},
+      notify = #{notify,jdbcType=VARCHAR},
+      new_count = #{newCount,jdbcType=INTEGER},
+      new_day = #{newDay,jdbcType=DATE},
+      info = #{info,jdbcType=VARCHAR},
+      ctime = #{ctime,jdbcType=TIMESTAMP},
+      intro = #{intro,jdbcType=LONGVARCHAR},
+      avatar_middle = #{avatarMiddle,jdbcType=LONGVARCHAR}
+    where weiquan_id = #{weiquanId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.antsns.entity.Weiquan" >
+    update as_weiquan
+    set cid = #{cid,jdbcType=INTEGER},
+      weiquan_name = #{weiquanName,jdbcType=VARCHAR},
+      uid = #{uid,jdbcType=INTEGER},
+      who_can_post = #{whoCanPost,jdbcType=BIT},
+      who_can_reply = #{whoCanReply,jdbcType=BIT},
+      follower_count = #{followerCount,jdbcType=INTEGER},
+      thread_count = #{threadCount,jdbcType=INTEGER},
+      admin_uid = #{adminUid,jdbcType=INTEGER},
+      recommend = #{recommend,jdbcType=BIT},
+      status = #{status,jdbcType=BIT},
+      is_del = #{isDel,jdbcType=INTEGER},
+      notify = #{notify,jdbcType=VARCHAR},
+      new_count = #{newCount,jdbcType=INTEGER},
+      new_day = #{newDay,jdbcType=DATE},
+      info = #{info,jdbcType=VARCHAR},
+      ctime = #{ctime,jdbcType=TIMESTAMP}
+    where weiquan_id = #{weiquanId,jdbcType=INTEGER}
+  </update>
+   <!-- 查询微圈板块下所有帖子-圈主 -->
+  <select id="selectWeiquanAdmin" parameterType="int" resultMap="ResultMapWithBLOBs">
+  SELECT
+	wq.weiquan_id,
+    wq.weiquan_name,
+	wq.follower_count,
+	wq.thread_count,
+	wq.avatar_middle,
+	wq.admin_uid,
+	wq.intro,
+	wq.thread_count+sum(p.reply_all_count) zts ,
+	u.uname
+FROM
+	as_user u,
+	as_weiquan wq,
+	as_weiquan_post p
+where
+p.weiquan_id = wq.weiquan_id and wq.admin_uid = u.uid and wq.weiquan_id=#{weiquanId};
+  </select>
+  <!-- 查询微圈板块下所有帖子-发帖者-按回复时间排序 -->
+  <select id="selectWeiquanUid" parameterType="int" resultMap="ResultMapWithBLOBs">
+ SELECT
+	p.title,
+	p.read_count,
+	p.reply_all_count,
+	p.post_id,
+	p.post_time,
+	p.last_reply_time,
+	p.post_uid,
+	p.digest,
+	p.top,
+	p.recommend,
+	u.uname
+FROM
+	as_user u,
+	as_weiquan wq,
+	as_weiquan_post p
+WHERE
+	p.weiquan_id = wq.weiquan_id
+AND p.post_uid = u.uid
+AND wq.weiquan_id=#{weiquanId}
+ORDER BY
+	p.last_reply_time DESC
+  </select>
+  <!-- 添加帖子时，微圈板块的帖子数量+1 -->
+  <update id="UpadateThredNew" parameterType="int">
+  update as_weiquan set thread_count = thread_count+1 where weiquan_id = #{weiquanId}
+  </update>
+  <!-- 删除帖子时，微圈板块的帖子数量-1 -->
+  <update id="UpadateThredjian" parameterType="int">
+  update as_weiquan set thread_count = thread_count-1 where weiquan_id = #{weiquanId}
+  </update>
+  <!-- 根据微圈id查询出微圈管理基本信息 -->
+  <select id="selectweiquanAdminfinall" parameterType="com.antsns.entity.Weiquan" resultMap="ResultMapWithBLOBs">
+  SELECT
+	wq.weiquan_id,
+	wq.weiquan_name,
+	wq.avatar_middle,
+	wq.intro,
+	wq.who_can_post,
+	c.cname,
+	c.cid
+FROM
+	as_weiquan wq,
+	as_weiquan_category c
+where wq.cid = c.cid
+and wq.weiquan_id = #{weiquanId}
+  </select>
+  <!-- 圈主修改微圈基本信息 -->
+  <update id="updateWeiquan" parameterType="com.antsns.entity.WeiquanWithBLOBs">
+  UPDATE as_weiquan
+SET weiquan_name = #{weiquanName},
+ avatar_middle =#{avatarMiddle},
+ intro = #{intro},
+ who_can_post = #{whoCanPost},
+ cid = #{cid} 
+where weiquan_id = #{weiquanId}  
+  </update>
+</mapper>
